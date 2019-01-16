@@ -188,6 +188,29 @@ def synsets(lemma, pos=None):
                 Synset(syn_id, syn_headword, syn_lemmas, syn_pos, syn_definition, syn_examples))
     return all_synsets
 
+def synset(word):
+    synset_id = int(word.split('.')[2])
+    # load synset offset mapping
+    synset_filename = 'synid_fileoffset_mapping_dump'
+    infile = open(synset_filename, 'rb')
+    synset_offset_mapping = pickle.load(infile)
+    infile.close()
+        
+    # find synset
+    if synset_id in synset_offset_mapping:
+        with open('tbl_all_gujarati_synset_data.csv', encoding='utf8') as reader:
+            offset = synset_offset_mapping[synset_id]
+            reader.seek(offset)
+            csv_reader = csv.reader(reader)
+            syn_data = next(csv_reader)
+            syn_id = int(syn_data[0])
+            syn_pos = syn_data[-1]
+            syn_lemmas = syn_data[2].split(',')
+            syn_headword = syn_lemmas[0]
+            syn_definition = syn_data[3].split(';')[0]
+            syn_examples = syn_data[3].split(';')[1].strip('\\').split('/')
+            
+            return Synset(syn_id, syn_headword, syn_lemmas, syn_pos, syn_definition, syn_examples)
 def similarity_path(sense1, sense2):
     ancestors1 = {sense1.synset_id(): 1}
     ancestors2 = {sense2.synset_id(): 1}
