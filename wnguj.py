@@ -43,7 +43,6 @@ def setup():
     mapping = {}
     while line:
         offset = reader.tell()
-        #print(offset)
         line = reader.readline()
         syn_id = line.split(',')[0]
         if syn_id != '':
@@ -402,7 +401,5 @@ def similarity_lch(sense1, sense2):
         for item in ancestors1.keys():
             if item in ancestors2:
                 min_dist = min(ancestors1[item]+ancestors2[item], min_dist)
-        print((2*max(ancestors1[root],ancestors2[root])))
-        print(min_dist)
 
         return -1.0 * math.log10((min_dist-1)/(2 * max(ancestors1[root],ancestors2[root])))
