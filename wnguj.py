@@ -147,11 +147,104 @@ class Synset:
                     Synset(syn_id, syn_headword, syn_lemmas, syn_pos, syn_definition, syn_examples))
         return all_synsets
 
-    def hypernymy(self):
+
+    def hypernymy(self, lvl=None):
+
         if self._pos in ['ADJECTIVE', 'ADVERB']:
+
+            raise IndoWordNetError('This synset relation is not valid for adjectives and adverbs.')
+        if lvl is not None:
+            all_synsets = [[self]]
+            for i in range(lvl):
+                lvl_synsets = []
+                for x in all_synsets[i]:
+                    for y in x.hypernymy():
+                        lvl_synsets.append(y)
+                all_synsets.append(lvl_synsets)
+            return all_synsets  
+        else:
+            return self._relations('hypernymy')
+
+
+    def antonym(self):
+        
+        cat =['action','personality','amount','place','colour','quality','direction','size','gender','state','manner','time']
+        synset_id_list = set()
+        for c in cat:
+            with open('relations/tbl_{}_anto_{}.csv'.format(self._pos.lower(), c)) as reader:
+                
+                csv_reader = csv.reader(reader, delimiter=',')
+                next(csv_reader)
+                for line in csv_reader:
+                    x = int(line[0].strip())
+                    if self._synset_id == x:
+                        synset_id_list.add(int(line[2]))
+            
+        # load synset offset mapping
+        synset_filename = 'synid_fileoffset_mapping_dump'
+        infile = open(synset_filename, 'rb')
+        synset_offset_mapping = pickle.load(infile)
+        infile.close()
+
+        # find all synsets
+        all_synsets = []
+        with open('tbl_all_gujarati_synset_data.csv', encoding='utf8') as reader:
+            for i in synset_id_list:
+                offset = synset_offset_mapping[i]
+                reader.seek(offset)
+                csv_reader = csv.reader(reader)
+                syn_data = next(csv_reader)
+                syn_id = int(syn_data[0])
+                syn_pos = syn_data[-1]
+                syn_lemmas = syn_data[2].split(',')
+                syn_headword = syn_lemmas[0]
+                syn_definition = syn_data[3].split(';')[0]
+                syn_examples = syn_data[3].split(';')[-1]
+                all_synsets.append(
+                    Synset(syn_id, syn_headword, syn_lemmas, syn_pos, syn_definition, syn_examples))
+        return all_synsets
+    
+    def meronym(self):
+        
+        if self._pos in ['ADJECTIVE', 'ADVERB','VERB']:
             raise IndoWordNetError(
-                'This synset relation is not valid for adjectives and adverbs.')
-        return self._relations('hypernymy')
+                'This synset relation is not valid for adjectives,verbs and adverbs.')
+        
+        cat =['component_object','feature_activity','member_collection','phase_state','place_area','portion_mass','position_area','resource_process','stuff_object']
+        synset_id_list = set()
+        for c in cat:
+            with open('relations/tbl_{}_mero_{}.csv'.format(self._pos.lower(), c)) as reader:
+                
+                csv_reader = csv.reader(reader, delimiter=',')
+                next(csv_reader)
+                for line in csv_reader:
+                    x = int(line[0].strip())
+                    if self._synset_id == x:
+                        synset_id_list.add(int(line[1]))
+            
+        # load synset offset mapping
+        synset_filename = 'synid_fileoffset_mapping_dump'
+        infile = open(synset_filename, 'rb')
+        synset_offset_mapping = pickle.load(infile)
+        infile.close()
+
+        # find all synsets
+        all_synsets = []
+        with open('tbl_all_gujarati_synset_data.csv', encoding='utf8') as reader:
+            for i in synset_id_list:
+                offset = synset_offset_mapping[i]
+                reader.seek(offset)
+                csv_reader = csv.reader(reader)
+                syn_data = next(csv_reader)
+                syn_id = int(syn_data[0])
+                syn_pos = syn_data[-1]
+                syn_lemmas = syn_data[2].split(',')
+                syn_headword = syn_lemmas[0]
+                syn_definition = syn_data[3].split(';')[0]
+                syn_examples = syn_data[3].split(';')[-1]
+                all_synsets.append(
+                    Synset(syn_id, syn_headword, syn_lemmas, syn_pos, syn_definition, syn_examples))
+        return all_synsets
 
 
 
@@ -186,6 +279,8 @@ def synsets(lemma, pos=None):
             all_synsets.append(
                 Synset(syn_id, syn_headword, syn_lemmas, syn_pos, syn_definition, syn_examples))
     return all_synsets
+
+
 
 def synset(word):
     synset_id = int(word.split('.')[2])
