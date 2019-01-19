@@ -1,7 +1,7 @@
 # import the Gujarati wordnet module
 import wnguj as wn
 
-# setup
+# setup (run once only)
 # wn.setup()
 
 # Get all synsets for a given word
@@ -25,6 +25,27 @@ print(ss.examples())
 
 # print hypernyms of synset
 print(ss.hypernymy())
+
+# print hypernyms of synset by level
+print(ss.hypernymy(3))
+
+#print hyponyms
+print(wn.synsets('લગ્ન')[1].hyponymy())
+
+#print antonyms of synset
+print(wn.synset('મહિલા.NOUN.2954').antonymy())
+
+#print meronym of synset
+print(wn.synset('શિવાલય.NOUN.5').meronymy())
+
+#print entailment
+print(wn.synset('વિલાપ_કરવો.VERB.240').entailment())
+
+#print troponym
+print(wn.synset('હસવું.VERB.4679').troponymy())
+
+#print holonyms
+print(wn.synset('મહિલા.NOUN.2954').holonymy())
 
 # Smilarity measures
 
