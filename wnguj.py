@@ -192,7 +192,7 @@ class Synset:
         cat =['action','personality','amount','place','colour','quality','direction','size','gender','state','manner','time']
         synset_id_list = set()
         for c in cat:
-            with open('relations/tbl_{}_anto_{}.csv'.format(self._pos.lower(), c)) as reader:
+            with open('relations/tbl_{}_anto_{}.csv'.format(self._pos.lower(), c),encoding='utf8') as reader:
                 
                 csv_reader = csv.reader(reader, delimiter=',')
                 next(csv_reader)
@@ -234,7 +234,7 @@ class Synset:
         cat =['component_object','feature_activity','member_collection','phase_state','place_area','portion_mass','position_area','resource_process','stuff_object']
         synset_id_list = set()
         for c in cat:
-            with open('relations/tbl_{}_mero_{}.csv'.format(self._pos.lower(), c)) as reader:
+            with open('relations/tbl_{}_mero_{}.csv'.format(self._pos.lower(), c),encoding='utf-8') as reader:
                 
                 csv_reader = csv.reader(reader, delimiter=',')
                 next(csv_reader)
@@ -276,7 +276,7 @@ class Synset:
         cat =['component_object','feature_activity','member_collection','phase_state','place_area','portion_mass','position_area','resource_process','stuff_object']
         synset_id_list = set()
         for c in cat:
-            with open('relations/tbl_{}_holo_{}.csv'.format(self._pos.lower(), c)) as reader:
+            with open('relations/tbl_{}_holo_{}.csv'.format(self._pos.lower(), c),encoding='utf-8') as reader:
                 
                 csv_reader = csv.reader(reader, delimiter=',')
                 next(csv_reader)

@@ -2,7 +2,7 @@
 import wnguj as wn
 
 # setup (run once only)
-# wn.setup()
+wn.setup()
 
 # Get all synsets for a given word
 print(wn.synsets('ઇલા'))
